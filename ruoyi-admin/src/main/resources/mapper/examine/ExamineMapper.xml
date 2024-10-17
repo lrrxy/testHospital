@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.examine.mapper.ExamineMapper">
+    
+    <resultMap type="Examine" id="ExamineResult">
+        <result property="examineId"    column="examine_id"    />
+        <result property="examineName"    column="examine_name"    />
+        <result property="examinePrice"    column="examine_price"    />
+        <result property="examineType"    column="examine_type"    />
+    </resultMap>
+
+    <sql id="selectExamineVo">
+        select examine_id, examine_name, examine_price, examine_type from examine
+    </sql>
+
+    <select id="selectExamineList" parameterType="Examine" resultMap="ExamineResult">
+        <include refid="selectExamineVo"/>
+        <where>  
+            <if test="examineName != null  and examineName != ''"> and examine_name like concat('%', #{examineName}, '%')</if>
+            <if test="examinePrice != null "> and examine_price = #{examinePrice}</if>
+            <if test="examineType != null  and examineType != ''"> and examine_type = #{examineType}</if>
+        </where>
+    </select>
+    
+    <select id="selectExamineByExamineId" parameterType="Long" resultMap="ExamineResult">
+        <include refid="selectExamineVo"/>
+        where examine_id = #{examineId}
+    </select>
+
+    <insert id="insertExamine" parameterType="Examine" useGeneratedKeys="true" keyProperty="examineId">
+        insert into examine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="examineName != null and examineName != ''">examine_name,</if>
+            <if test="examinePrice != null">examine_price,</if>
+            <if test="examineType != null and examineType != ''">examine_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="examineName != null and examineName != ''">#{examineName},</if>
+            <if test="examinePrice != null">#{examinePrice},</if>
+            <if test="examineType != null and examineType != ''">#{examineType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateExamine" parameterType="Examine">
+        update examine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="examineName != null and examineName != ''">examine_name = #{examineName},</if>
+            <if test="examinePrice != null">examine_price = #{examinePrice},</if>
+            <if test="examineType != null and examineType != ''">examine_type = #{examineType},</if>
+        </trim>
+        where examine_id = #{examineId}
+    </update>
+
+    <delete id="deleteExamineByExamineId" parameterType="Long">
+        delete from examine where examine_id = #{examineId}
+    </delete>
+
+    <delete id="deleteExamineByExamineIds" parameterType="String">
+        delete from examine where examine_id in 
+        <foreach item="examineId" collection="array" open="(" separator="," close=")">
+            #{examineId}
+        </foreach>
+    </delete>
+</mapper>

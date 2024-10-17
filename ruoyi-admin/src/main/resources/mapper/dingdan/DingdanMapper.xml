@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dingdan.mapper.DingdanMapper">
+    
+    <resultMap type="Dingdan" id="DingdanResult">
+        <result property="dingdanId"    column="dingdan_id"    />
+        <result property="sickbedId"    column="sickbed_id"    />
+        <result property="nurseId"    column="nurse_id"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="jiageId"    column="jiage_id"    />
+        <result property="UpdateDataTime"    column="UpdateDataTime"    />
+        <result property="dingdanStatus"    column="dingdan_status"    />
+    </resultMap>
+
+    <sql id="selectDingdanVo">
+        select dingdan_id, sickbed_id, nurse_id, doctor_id, user_id, jiage_id, UpdateDataTime, dingdan_status from dingdan
+    </sql>
+
+    <select id="selectDingdanList" parameterType="Dingdan" resultMap="DingdanResult">
+        <include refid="selectDingdanVo"/>
+        <where>  
+            <if test="UpdateDataTime != null "> and UpdateDataTime = #{UpdateDataTime}</if>
+            <if test="dingdanStatus != null "> and dingdan_status = #{dingdanStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectDingdanByDingdanId" parameterType="Long" resultMap="DingdanResult">
+        <include refid="selectDingdanVo"/>
+        where dingdan_id = #{dingdanId}
+    </select>
+
+    <insert id="insertDingdan" parameterType="Dingdan" useGeneratedKeys="true" keyProperty="dingdanId">
+        insert into dingdan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sickbedId != null">sickbed_id,</if>
+            <if test="nurseId != null">nurse_id,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="jiageId != null">jiage_id,</if>
+            <if test="UpdateDataTime != null">UpdateDataTime,</if>
+            <if test="dingdanStatus != null">dingdan_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sickbedId != null">#{sickbedId},</if>
+            <if test="nurseId != null">#{nurseId},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="jiageId != null">#{jiageId},</if>
+            <if test="UpdateDataTime != null">#{UpdateDataTime},</if>
+            <if test="dingdanStatus != null">#{dingdanStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDingdan" parameterType="Dingdan">
+        update dingdan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sickbedId != null">sickbed_id = #{sickbedId},</if>
+            <if test="nurseId != null">nurse_id = #{nurseId},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="jiageId != null">jiage_id = #{jiageId},</if>
+            <if test="UpdateDataTime != null">UpdateDataTime = #{UpdateDataTime},</if>
+            <if test="dingdanStatus != null">dingdan_status = #{dingdanStatus},</if>
+        </trim>
+        where dingdan_id = #{dingdanId}
+    </update>
+
+    <delete id="deleteDingdanByDingdanId" parameterType="Long">
+        delete from dingdan where dingdan_id = #{dingdanId}
+    </delete>
+
+    <delete id="deleteDingdanByDingdanIds" parameterType="String">
+        delete from dingdan where dingdan_id in 
+        <foreach item="dingdanId" collection="array" open="(" separator="," close=")">
+            #{dingdanId}
+        </foreach>
+    </delete>
+</mapper>

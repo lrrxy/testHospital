@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.user.mapper.UserMapper">
+    <resultMap type="User" id="UserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userAge"    column="user_age"    />
+        <result property="userSex"    column="user_sex"    />
+        <result property="userStatus"    column="user_status"    />
+        <result property="userBirthday"    column="user_birthday"    />
+        <result property="userCase"    column="user_case"    />
+        <result property="userOrder"    column="user_order"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="nurseId"    column="nurse_id"    />
+        <result property="sickbedId"    column="sickbed_id"    />
+        <result property="wardId"    column="ward_id"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="dingdanId"    column="dingdan_id"    />
+        <result property="userZhanghao"    column="user_zhanghao"    />
+        <result property="userPassword"    column="user_password"    />
+    </resultMap>
+
+    <sql id="selectUserVo">
+        select user_id, user_name, user_age, user_sex, user_status, user_birthday, user_case, user_order, doctor_id, nurse_id, sickbed_id, ward_id, id_card, create_time, user_phone, dingdan_id, user_zhanghao, user_password from user
+    </sql>
+
+    <select id="selectUserList" parameterType="User" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userAge != null "> and user_age = #{userAge}</if>
+            <if test="userSex != null  and userSex != ''"> and user_sex = #{userSex}</if>
+            <if test="userStatus != null  and userStatus != ''"> and user_status = #{userStatus}</if>
+            <if test="userBirthday != null "> and user_birthday = #{userBirthday}</if>
+            <if test="userCase != null  and userCase != ''"> and user_case = #{userCase}</if>
+            <if test="userOrder != null  and userOrder != ''"> and user_order = #{userOrder}</if>
+            <if test="idCard != null  and idCard != ''"> and id_card = #{idCard}</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="dingdanId != null "> and dingdan_id = #{dingdanId}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserByUserId" parameterType="Long" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <select id="loginByName" parameterType="String" resultMap="UserResult">
+            <include refid="selectUserVo"/>
+    where user_zhanghao = #{userZhanghao} AND user_password = #{userPassword}
+    </select>
+
+    <select id="selectSickbedID" parameterType="int" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        where sickbed_id = #{sickbedId}
+    </select>
+
+    <select id="loginByPhone" parameterType="String" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        where user_phone = #{userPhone} AND user_password = #{userPassword}
+    </select>
+
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="userAge != null">user_age,</if>
+            <if test="userSex != null">user_sex,</if>
+            <if test="userStatus != null">user_status,</if>
+            <if test="userBirthday != null">user_birthday,</if>
+            <if test="userCase != null">user_case,</if>
+            <if test="userOrder != null">user_order,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="nurseId != null">nurse_id,</if>
+            <if test="sickbedId != null">sickbed_id,</if>
+            <if test="wardId != null">ward_id,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userPhone != null">user_phone,</if>
+            <if test="dingdanId != null">dingdan_id,</if>
+            <if test="userZhanghao != null">user_zhanghao,</if>
+            <if test="userPassword != null">user_password,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="userAge != null">#{userAge},</if>
+            <if test="userSex != null">#{userSex},</if>
+            <if test="userStatus != null">#{userStatus},</if>
+            <if test="userBirthday != null">#{userBirthday},</if>
+            <if test="userCase != null">#{userCase},</if>
+            <if test="userOrder != null">#{userOrder},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="nurseId != null">#{nurseId},</if>
+            <if test="sickbedId != null">#{sickbedId},</if>
+            <if test="wardId != null">#{wardId},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userPhone != null">#{userPhone},</if>
+            <if test="dingdanId != null">#{dingdanId},</if>
+            <if test="userZhanghao != null">#{userZhanghao},</if>
+            <if test="userPassword != null">#{userPassword},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userAge != null">user_age = #{userAge},</if>
+            <if test="userSex != null">user_sex = #{userSex},</if>
+            <if test="userStatus != null">user_status = #{userStatus},</if>
+            <if test="userBirthday != null">user_birthday = #{userBirthday},</if>
+            <if test="userCase != null">user_case = #{userCase},</if>
+            <if test="userOrder != null">user_order = #{userOrder},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="nurseId != null">nurse_id = #{nurseId},</if>
+            <if test="sickbedId != null">sickbed_id = #{sickbedId},</if>
+            <if test="wardId != null">ward_id = #{wardId},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userPhone != null">user_phone = #{userPhone},</if>
+            <if test="dingdanId != null">dingdan_id = #{dingdanId},</if>
+            <if test="userZhanghao != null">user_zhanghao = #{userZhanghao},</if>
+            <if test="userPassword != null">user_password = #{userPassword},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteUserByUserId" parameterType="Long">
+        delete from user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteUserByUserIds" parameterType="String">
+        delete from user where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

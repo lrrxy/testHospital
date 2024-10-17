@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ward.mapper.WardMapper">
+    
+    <resultMap type="Ward" id="WardResult">
+        <result property="wardId"    column="ward_id"    />
+        <result property="wardInformation"    column="ward_information"    />
+        <result property="wardStatus"    column="ward_status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectWardVo">
+        select ward_id, ward_information, ward_status, create_time from ward
+    </sql>
+
+    <select id="selectWardList" parameterType="Ward" resultMap="WardResult">
+        <include refid="selectWardVo"/>
+        <where>  
+            <if test="wardInformation != null  and wardInformation != ''"> and ward_information = #{wardInformation}</if>
+            <if test="wardStatus != null  and wardStatus != ''"> and ward_status = #{wardStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectWardByWardId" parameterType="Long" resultMap="WardResult">
+        <include refid="selectWardVo"/>
+        where ward_id = #{wardId}
+    </select>
+
+    <insert id="insertWard" parameterType="Ward" useGeneratedKeys="true" keyProperty="wardId">
+        insert into ward
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wardInformation != null">ward_information,</if>
+            <if test="wardStatus != null">ward_status,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wardInformation != null">#{wardInformation},</if>
+            <if test="wardStatus != null">#{wardStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWard" parameterType="Ward">
+        update ward
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wardInformation != null">ward_information = #{wardInformation},</if>
+            <if test="wardStatus != null">ward_status = #{wardStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where ward_id = #{wardId}
+    </update>
+
+    <delete id="deleteWardByWardId" parameterType="Long">
+        delete from ward where ward_id = #{wardId}
+    </delete>
+
+    <delete id="deleteWardByWardIds" parameterType="String">
+        delete from ward where ward_id in 
+        <foreach item="wardId" collection="array" open="(" separator="," close=")">
+            #{wardId}
+        </foreach>
+    </delete>
+</mapper>

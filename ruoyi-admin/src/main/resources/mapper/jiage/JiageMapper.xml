@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jiage.mapper.JiageMapper">
+    
+    <resultMap type="Jiage" id="JiageResult">
+        <result property="jiageId"    column="jiage_id"    />
+        <result property="sumMoney"    column="sum_money"    />
+        <result property="medicineId"    column="medicine_id"    />
+        <result property="examineId"    column="examine_id"    />
+        <result property="treatmentId"    column="treatment_id"    />
+        <result property="sickbedId"    column="sickbed_id"    />
+    </resultMap>
+
+    <sql id="selectJiageVo">
+        select jiage_id, sum_money, medicine_id, examine_id, treatment_id, sickbed_id from jiage
+    </sql>
+
+    <select id="selectJiageList" parameterType="Jiage" resultMap="JiageResult">
+        <include refid="selectJiageVo"/>
+        <where>  
+            <if test="sumMoney != null "> and sum_money = #{sumMoney}</if>
+            <if test="medicineId != null "> and medicine_id = #{medicineId}</if>
+            <if test="examineId != null "> and examine_id = #{examineId}</if>
+            <if test="treatmentId != null "> and treatment_id = #{treatmentId}</if>
+            <if test="sickbedId != null "> and sickbed_id = #{sickbedId}</if>
+        </where>
+    </select>
+    
+    <select id="selectJiageByJiageId" parameterType="Long" resultMap="JiageResult">
+        <include refid="selectJiageVo"/>
+        where jiage_id = #{jiageId}
+    </select>
+
+    <insert id="insertJiage" parameterType="Jiage" useGeneratedKeys="true" keyProperty="jiageId">
+        insert into jiage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sumMoney != null">sum_money,</if>
+            <if test="medicineId != null">medicine_id,</if>
+            <if test="examineId != null">examine_id,</if>
+            <if test="treatmentId != null">treatment_id,</if>
+            <if test="sickbedId != null">sickbed_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sumMoney != null">#{sumMoney},</if>
+            <if test="medicineId != null">#{medicineId},</if>
+            <if test="examineId != null">#{examineId},</if>
+            <if test="treatmentId != null">#{treatmentId},</if>
+            <if test="sickbedId != null">#{sickbedId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJiage" parameterType="Jiage">
+        update jiage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sumMoney != null">sum_money = #{sumMoney},</if>
+            <if test="medicineId != null">medicine_id = #{medicineId},</if>
+            <if test="examineId != null">examine_id = #{examineId},</if>
+            <if test="treatmentId != null">treatment_id = #{treatmentId},</if>
+            <if test="sickbedId != null">sickbed_id = #{sickbedId},</if>
+        </trim>
+        where jiage_id = #{jiageId}
+    </update>
+
+    <delete id="deleteJiageByJiageId" parameterType="Long">
+        delete from jiage where jiage_id = #{jiageId}
+    </delete>
+
+    <delete id="deleteJiageByJiageIds" parameterType="String">
+        delete from jiage where jiage_id in 
+        <foreach item="jiageId" collection="array" open="(" separator="," close=")">
+            #{jiageId}
+        </foreach>
+    </delete>
+</mapper>

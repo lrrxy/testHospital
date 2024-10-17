@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.medicine.mapper.MedicineMapper">
+    
+    <resultMap type="Medicine" id="MedicineResult">
+        <result property="medicineId"    column="medicine_id"    />
+        <result property="medicineName"    column="medicine_name"    />
+        <result property="medicinePrice"    column="medicine_price"    />
+        <result property="medicineDatetime"    column="medicine_datetime"    />
+        <result property="medicineCount"    column="medicine_count"    />
+        <result property="medicineType"    column="medicine_type"    />
+        <result property="medicineNum"    column="medicine_num"    />
+        <result property="medicinePurpose"    column="medicine_purpose"    />
+    </resultMap>
+
+    <sql id="selectMedicineVo">
+        select medicine_id, medicine_name, medicine_price, medicine_datetime, medicine_count, medicine_type, medicine_num, medicine_purpose from medicine
+    </sql>
+
+    <select id="selectMedicineList" parameterType="Medicine" resultMap="MedicineResult">
+        <include refid="selectMedicineVo"/>
+        <where>  
+            <if test="medicineName != null  and medicineName != ''"> and medicine_name like concat('%', #{medicineName}, '%')</if>
+            <if test="medicinePrice != null "> and medicine_price = #{medicinePrice}</if>
+            <if test="medicineDatetime != null "> and medicine_datetime = #{medicineDatetime}</if>
+            <if test="medicineCount != null "> and medicine_count = #{medicineCount}</if>
+            <if test="medicineType != null  and medicineType != ''"> and medicine_type = #{medicineType}</if>
+            <if test="medicineNum != null "> and medicine_num = #{medicineNum}</if>
+            <if test="medicinePurpose != null  and medicinePurpose != ''"> and medicine_purpose = #{medicinePurpose}</if>
+        </where>
+    </select>
+    
+    <select id="selectMedicineByMedicineId" parameterType="Long" resultMap="MedicineResult">
+        <include refid="selectMedicineVo"/>
+        where medicine_id = #{medicineId}
+    </select>
+
+    <insert id="insertMedicine" parameterType="Medicine" useGeneratedKeys="true" keyProperty="medicineId">
+        insert into medicine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="medicineName != null and medicineName != ''">medicine_name,</if>
+            <if test="medicinePrice != null">medicine_price,</if>
+            <if test="medicineDatetime != null">medicine_datetime,</if>
+            <if test="medicineCount != null">medicine_count,</if>
+            <if test="medicineType != null and medicineType != ''">medicine_type,</if>
+            <if test="medicineNum != null">medicine_num,</if>
+            <if test="medicinePurpose != null and medicinePurpose != ''">medicine_purpose,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="medicineName != null and medicineName != ''">#{medicineName},</if>
+            <if test="medicinePrice != null">#{medicinePrice},</if>
+            <if test="medicineDatetime != null">#{medicineDatetime},</if>
+            <if test="medicineCount != null">#{medicineCount},</if>
+            <if test="medicineType != null and medicineType != ''">#{medicineType},</if>
+            <if test="medicineNum != null">#{medicineNum},</if>
+            <if test="medicinePurpose != null and medicinePurpose != ''">#{medicinePurpose},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMedicine" parameterType="Medicine">
+        update medicine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="medicineName != null and medicineName != ''">medicine_name = #{medicineName},</if>
+            <if test="medicinePrice != null">medicine_price = #{medicinePrice},</if>
+            <if test="medicineDatetime != null">medicine_datetime = #{medicineDatetime},</if>
+            <if test="medicineCount != null">medicine_count = #{medicineCount},</if>
+            <if test="medicineType != null and medicineType != ''">medicine_type = #{medicineType},</if>
+            <if test="medicineNum != null">medicine_num = #{medicineNum},</if>
+            <if test="medicinePurpose != null and medicinePurpose != ''">medicine_purpose = #{medicinePurpose},</if>
+        </trim>
+        where medicine_id = #{medicineId}
+    </update>
+
+    <delete id="deleteMedicineByMedicineId" parameterType="Long">
+        delete from medicine where medicine_id = #{medicineId}
+    </delete>
+
+    <delete id="deleteMedicineByMedicineIds" parameterType="String">
+        delete from medicine where medicine_id in 
+        <foreach item="medicineId" collection="array" open="(" separator="," close=")">
+            #{medicineId}
+        </foreach>
+    </delete>
+</mapper>

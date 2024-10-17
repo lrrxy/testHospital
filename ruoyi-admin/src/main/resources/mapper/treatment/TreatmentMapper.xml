@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.treatment.mapper.TreatmentMapper">
+    
+    <resultMap type="Treatment" id="TreatmentResult">
+        <result property="treatmentId"    column="treatment_id"    />
+        <result property="treatmentName"    column="treatment_name"    />
+        <result property="treatmentPrice"    column="treatment_price"    />
+        <result property="treatmentType"    column="treatment_type"    />
+        <result property="doctorId"    column="doctor_id"    />
+    </resultMap>
+
+    <sql id="selectTreatmentVo">
+        select treatment_id, treatment_name, treatment_price, treatment_type, doctor_id from treatment
+    </sql>
+
+    <select id="selectTreatmentList" parameterType="Treatment" resultMap="TreatmentResult">
+        <include refid="selectTreatmentVo"/>
+        <where>  
+            <if test="treatmentName != null  and treatmentName != ''"> and treatment_name like concat('%', #{treatmentName}, '%')</if>
+            <if test="treatmentPrice != null "> and treatment_price = #{treatmentPrice}</if>
+            <if test="treatmentType != null  and treatmentType != ''"> and treatment_type = #{treatmentType}</if>
+            <if test="doctorId != null "> and doctor_id = #{doctorId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTreatmentByTreatmentId" parameterType="Long" resultMap="TreatmentResult">
+        <include refid="selectTreatmentVo"/>
+        where treatment_id = #{treatmentId}
+    </select>
+
+    <insert id="insertTreatment" parameterType="Treatment" useGeneratedKeys="true" keyProperty="treatmentId">
+        insert into treatment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treatmentName != null and treatmentName != ''">treatment_name,</if>
+            <if test="treatmentPrice != null">treatment_price,</if>
+            <if test="treatmentType != null and treatmentType != ''">treatment_type,</if>
+            <if test="doctorId != null">doctor_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treatmentName != null and treatmentName != ''">#{treatmentName},</if>
+            <if test="treatmentPrice != null">#{treatmentPrice},</if>
+            <if test="treatmentType != null and treatmentType != ''">#{treatmentType},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTreatment" parameterType="Treatment">
+        update treatment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="treatmentName != null and treatmentName != ''">treatment_name = #{treatmentName},</if>
+            <if test="treatmentPrice != null">treatment_price = #{treatmentPrice},</if>
+            <if test="treatmentType != null and treatmentType != ''">treatment_type = #{treatmentType},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+        </trim>
+        where treatment_id = #{treatmentId}
+    </update>
+
+    <delete id="deleteTreatmentByTreatmentId" parameterType="Long">
+        delete from treatment where treatment_id = #{treatmentId}
+    </delete>
+
+    <delete id="deleteTreatmentByTreatmentIds" parameterType="String">
+        delete from treatment where treatment_id in 
+        <foreach item="treatmentId" collection="array" open="(" separator="," close=")">
+            #{treatmentId}
+        </foreach>
+    </delete>
+</mapper>

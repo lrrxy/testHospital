@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ExamineTreatmentCase.mapper.ExamineTreatmentCaseMapper">
+    
+    <resultMap type="ExamineTreatmentCase" id="ExamineTreatmentCaseResult">
+        <result property="examineTreatmentCaseId"    column="examine_treatment_case_id"    />
+        <result property="examineTreatmentCategory"    column="examine_treatment_category"    />
+        <result property="doctorId"    column="doctor_id"    />
+        <result property="doctorName"    column="doctor_name"    />
+        <result property="doctorStatus"    column="doctor_status"    />
+        <result property="userId"    column="user_id"    />
+        <result property="caseStatus"    column="case_status"    />
+        <result property="examineTreatmentDate"    column="examine_treatment_date"    />
+    </resultMap>
+
+    <sql id="selectExamineTreatmentCaseVo">
+        select examine_treatment_case_id, examine_treatment_category, doctor_id, doctor_name, doctor_status, user_id, case_status, examine_treatment_date from examine_treatment_case
+    </sql>
+
+    <select id="selectExamineTreatmentCaseList" parameterType="ExamineTreatmentCase" resultMap="ExamineTreatmentCaseResult">
+        <include refid="selectExamineTreatmentCaseVo"/>
+        <where>  
+            <if test="examineTreatmentCategory != null "> and examine_treatment_category = #{examineTreatmentCategory}</if>
+            <if test="doctorId != null "> and doctor_id = #{doctorId}</if>
+            <if test="doctorName != null  and doctorName != ''"> and doctor_name like concat('%', #{doctorName}, '%')</if>
+            <if test="doctorStatus != null "> and doctor_status = #{doctorStatus}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="caseStatus != null "> and case_status = #{caseStatus}</if>
+            <if test="examineTreatmentDate != null "> and examine_treatment_date = #{examineTreatmentDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectExamineTreatmentCaseByExamineTreatmentCaseId" parameterType="Long" resultMap="ExamineTreatmentCaseResult">
+        <include refid="selectExamineTreatmentCaseVo"/>
+        where examine_treatment_case_id = #{examineTreatmentCaseId}
+    </select>
+
+    <insert id="insertExamineTreatmentCase" parameterType="ExamineTreatmentCase" useGeneratedKeys="true" keyProperty="examineTreatmentCaseId">
+        insert into examine_treatment_case
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="examineTreatmentCategory != null">examine_treatment_category,</if>
+            <if test="doctorId != null">doctor_id,</if>
+            <if test="doctorName != null">doctor_name,</if>
+            <if test="doctorStatus != null">doctor_status,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="caseStatus != null">case_status,</if>
+            <if test="examineTreatmentDate != null">examine_treatment_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="examineTreatmentCategory != null">#{examineTreatmentCategory},</if>
+            <if test="doctorId != null">#{doctorId},</if>
+            <if test="doctorName != null">#{doctorName},</if>
+            <if test="doctorStatus != null">#{doctorStatus},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="caseStatus != null">#{caseStatus},</if>
+            <if test="examineTreatmentDate != null">#{examineTreatmentDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateExamineTreatmentCase" parameterType="ExamineTreatmentCase">
+        update examine_treatment_case
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="examineTreatmentCategory != null">examine_treatment_category = #{examineTreatmentCategory},</if>
+            <if test="doctorId != null">doctor_id = #{doctorId},</if>
+            <if test="doctorName != null">doctor_name = #{doctorName},</if>
+            <if test="doctorStatus != null">doctor_status = #{doctorStatus},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="caseStatus != null">case_status = #{caseStatus},</if>
+            <if test="examineTreatmentDate != null">examine_treatment_date = #{examineTreatmentDate},</if>
+        </trim>
+        where examine_treatment_case_id = #{examineTreatmentCaseId}
+    </update>
+
+    <delete id="deleteExamineTreatmentCaseByExamineTreatmentCaseId" parameterType="Long">
+        delete from examine_treatment_case where examine_treatment_case_id = #{examineTreatmentCaseId}
+    </delete>
+
+    <delete id="deleteExamineTreatmentCaseByExamineTreatmentCaseIds" parameterType="String">
+        delete from examine_treatment_case where examine_treatment_case_id in 
+        <foreach item="examineTreatmentCaseId" collection="array" open="(" separator="," close=")">
+            #{examineTreatmentCaseId}
+        </foreach>
+    </delete>
+</mapper>

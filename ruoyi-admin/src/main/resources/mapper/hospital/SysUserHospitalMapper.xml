@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hospital.mapper.SysUserHospitalMapper">
+    
+    <resultMap type="SysUserHospital" id="SysUserHospitalResult">
+        <result property="userId"    column="user_id"    />
+        <result property="hospitalId"    column="hospital_id"    />
+        <result property="hospitalName"    column="hospital_name"    />
+        <result property="hospitalDizhi"    column="hospital_dizhi"    />
+        <result property="hospitalStatus"    column="hospital_status"    />
+    </resultMap>
+
+    <sql id="selectSysUserHospitalVo">
+        select user_id, hospital_id, hospital_name, hospital_dizhi, hospital_status from sys_user_hospital
+    </sql>
+
+    <select id="selectSysUserHospitalList" parameterType="SysUserHospital" resultMap="SysUserHospitalResult">
+        <include refid="selectSysUserHospitalVo"/>
+        <where>  
+            <if test="hospitalId != null "> and hospital_id = #{hospitalId}</if>
+            <if test="hospitalName != null  and hospitalName != ''"> and hospital_name like concat('%', #{hospitalName}, '%')</if>
+            <if test="hospitalDizhi != null  and hospitalDizhi != ''"> and hospital_dizhi = #{hospitalDizhi}</if>
+            <if test="hospitalStatus != null "> and hospital_status = #{hospitalStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysUserHospitalByUserId" parameterType="Long" resultMap="SysUserHospitalResult">
+        <include refid="selectSysUserHospitalVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertSysUserHospital" parameterType="SysUserHospital" useGeneratedKeys="true" keyProperty="userId">
+        insert into sys_user_hospital
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hospitalId != null">hospital_id,</if>
+            <if test="hospitalName != null">hospital_name,</if>
+            <if test="hospitalDizhi != null">hospital_dizhi,</if>
+            <if test="hospitalStatus != null">hospital_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hospitalId != null">#{hospitalId},</if>
+            <if test="hospitalName != null">#{hospitalName},</if>
+            <if test="hospitalDizhi != null">#{hospitalDizhi},</if>
+            <if test="hospitalStatus != null">#{hospitalStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysUserHospital" parameterType="SysUserHospital">
+        update sys_user_hospital
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hospitalId != null">hospital_id = #{hospitalId},</if>
+            <if test="hospitalName != null">hospital_name = #{hospitalName},</if>
+            <if test="hospitalDizhi != null">hospital_dizhi = #{hospitalDizhi},</if>
+            <if test="hospitalStatus != null">hospital_status = #{hospitalStatus},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSysUserHospitalByUserId" parameterType="Long">
+        delete from sys_user_hospital where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserHospitalByUserIds" parameterType="String">
+        delete from sys_user_hospital where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.transfer.mapper.SysTransferOrderMapper">
+    
+    <resultMap type="SysTransferOrder" id="SysTransferOrderResult">
+        <result property="transferOrderId"    column="transfer_order_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="hospitalId"    column="hospital_id"    />
+        <result property="newHospitalId"    column="new_hospital_id"    />
+        <result property="transferOrderTime"    column="transfer_order_time"    />
+        <result property="transferOrderCondition"    column="transfer_order_condition"    />
+        <result property="orderStatus"    column="order_status"    />
+    </resultMap>
+
+    <sql id="selectSysTransferOrderVo">
+        select transfer_order_id, user_id, hospital_name, new_hospital_name, transfer_order_time, transfer_order_condition, order_status from sys_transfer_order
+    </sql>
+
+    <select id="selectSysTransferOrderList" parameterType="SysTransferOrder" resultMap="SysTransferOrderResult">
+        <include refid="selectSysTransferOrderVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="hospitalId != null "> and hospital_id = #{hospitalId}</if>
+            <if test="newHospitalId != null "> and new_hospital_id = #{newHospitalId}</if>
+            <if test="transferOrderTime != null "> and transfer_order_time = #{transferOrderTime}</if>
+            <if test="transferOrderCondition != null  and transferOrderCondition != ''"> and transfer_order_condition = #{transferOrderCondition}</if>
+            <if test="orderStatus != null "> and order_status = #{orderStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysTransferOrderByTransferOrderId" parameterType="Long" resultMap="SysTransferOrderResult">
+        <include refid="selectSysTransferOrderVo"/>
+        where transfer_order_id = #{transferOrderId}
+    </select>
+
+    <insert id="insertSysTransferOrder" parameterType="SysTransferOrder" useGeneratedKeys="true" keyProperty="transferOrderId">
+        insert into sys_transfer_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="hospitalId != null">hospital_id,</if>
+            <if test="newHospitalId != null">new_hospital_id,</if>
+            <if test="transferOrderTime != null">transfer_order_time,</if>
+            <if test="transferOrderCondition != null">transfer_order_condition,</if>
+            <if test="orderStatus != null">order_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="hospitalId != null">#{hospitalId},</if>
+            <if test="newHospitalId != null">#{newHospitalId},</if>
+            <if test="transferOrderTime != null">#{transferOrderTime},</if>
+            <if test="transferOrderCondition != null">#{transferOrderCondition},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysTransferOrder" parameterType="SysTransferOrder">
+        update sys_transfer_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="hospitalId != null">hospital_id = #{hospitalId},</if>
+            <if test="newHospitalId != null">new_hospital_id = #{newHospitalId},</if>
+            <if test="transferOrderTime != null">transfer_order_time = #{transferOrderTime},</if>
+            <if test="transferOrderCondition != null">transfer_order_condition = #{transferOrderCondition},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+        </trim>
+        where transfer_order_id = #{transferOrderId}
+    </update>
+
+    <delete id="deleteSysTransferOrderByTransferOrderId" parameterType="Long">
+        delete from sys_transfer_order where transfer_order_id = #{transferOrderId}
+    </delete>
+
+    <delete id="deleteSysTransferOrderByTransferOrderIds" parameterType="String">
+        delete from sys_transfer_order where transfer_order_id in 
+        <foreach item="transferOrderId" collection="array" open="(" separator="," close=")">
+            #{transferOrderId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.sickbed.mapper.SickbedMapper">
+    
+    <resultMap type="Sickbed" id="SickbedResult">
+        <result property="sickbedId"    column="sickbed_id"    />
+        <result property="sickbedInformation"    column="sickbed_information"    />
+        <result property="sickbedStatus"    column="sickbed_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="wardId"    column="ward_id"    />
+        <result property="sickbedPrice"    column="sickbed_price"    />
+    </resultMap>
+
+    <sql id="selectSickbedVo">
+        select sickbed_id, sickbed_information, sickbed_status, create_time, ward_id, sickbed_price from sickbed
+    </sql>
+
+    <select id="selectSickbedList" parameterType="Sickbed" resultMap="SickbedResult">
+        <include refid="selectSickbedVo"/>
+        <where>  
+            <if test="sickbedInformation != null  and sickbedInformation != ''"> and sickbed_information = #{sickbedInformation}</if>
+            <if test="sickbedStatus != null  and sickbedStatus != ''"> and sickbed_status = #{sickbedStatus}</if>
+            <if test="wardId != null "> and ward_id = #{wardId}</if>
+            <if test="sickbedPrice != null "> and sickbed_price = #{sickbedPrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectSickbedBySickbedId" parameterType="Long" resultMap="SickbedResult">
+        <include refid="selectSickbedVo"/>
+        where sickbed_id = #{sickbedId}
+    </select>
+
+    <insert id="insertSickbed" parameterType="Sickbed" useGeneratedKeys="true" keyProperty="sickbedId">
+        insert into sickbed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sickbedInformation != null">sickbed_information,</if>
+            <if test="sickbedStatus != null">sickbed_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="wardId != null">ward_id,</if>
+            <if test="sickbedPrice != null">sickbed_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sickbedInformation != null">#{sickbedInformation},</if>
+            <if test="sickbedStatus != null">#{sickbedStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="wardId != null">#{wardId},</if>
+            <if test="sickbedPrice != null">#{sickbedPrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSickbed" parameterType="Sickbed">
+        update sickbed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sickbedInformation != null">sickbed_information = #{sickbedInformation},</if>
+            <if test="sickbedStatus != null">sickbed_status = #{sickbedStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="wardId != null">ward_id = #{wardId},</if>
+            <if test="sickbedPrice != null">sickbed_price = #{sickbedPrice},</if>
+        </trim>
+        where sickbed_id = #{sickbedId}
+    </update>
+
+    <delete id="deleteSickbedBySickbedId" parameterType="Long">
+        delete from sickbed where sickbed_id = #{sickbedId}
+    </delete>
+
+    <delete id="deleteSickbedBySickbedIds" parameterType="String">
+        delete from sickbed where sickbed_id in 
+        <foreach item="sickbedId" collection="array" open="(" separator="," close=")">
+            #{sickbedId}
+        </foreach>
+    </delete>
+</mapper>

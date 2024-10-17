@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.payment.mapper.PaymentRecordMapper">
+    
+    <resultMap type="PaymentRecord" id="PaymentRecordResult">
+        <result property="recordId"    column="record_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="sum"    column="sum"    />
+        <result property="status"    column="status"    />
+        <result property="paymentDate"    column="payment_date"    />
+    </resultMap>
+
+    <sql id="selectPaymentRecordVo">
+        select record_id, user_id, user_name, project_name, payment_method, sum, status, payment_date from payment_record
+    </sql>
+
+    <select id="selectPaymentRecordList" parameterType="PaymentRecord" resultMap="PaymentRecordResult">
+        <include refid="selectPaymentRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="projectName != null "> and project_name like concat('%', #{projectName}, '%')</if>
+            <if test="paymentMethod != null "> and payment_method = #{paymentMethod}</if>
+            <if test="sum != null "> and sum = #{sum}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="paymentDate != null "> and payment_date = #{paymentDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectPaymentRecordByRecordId" parameterType="Long" resultMap="PaymentRecordResult">
+        <include refid="selectPaymentRecordVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <insert id="insertPaymentRecord" parameterType="PaymentRecord">
+        insert into payment_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">record_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="paymentMethod != null">payment_method,</if>
+            <if test="sum != null">sum,</if>
+            <if test="status != null">status,</if>
+            <if test="paymentDate != null">payment_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">#{recordId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="paymentMethod != null">#{paymentMethod},</if>
+            <if test="sum != null">#{sum},</if>
+            <if test="status != null">#{status},</if>
+            <if test="paymentDate != null">#{paymentDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePaymentRecord" parameterType="PaymentRecord">
+        update payment_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+            <if test="sum != null">sum = #{sum},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="paymentDate != null">payment_date = #{paymentDate},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deletePaymentRecordByRecordId" parameterType="Long">
+        delete from payment_record where record_id = #{recordId}
+    </delete>
+
+    <delete id="deletePaymentRecordByRecordIds" parameterType="String">
+        delete from payment_record where record_id in 
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+</mapper>
